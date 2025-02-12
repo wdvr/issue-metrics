@@ -38,8 +38,10 @@ class EnvVars:
         hide_time_to_close (bool): If true, the time to close metric is hidden in the output
         hide_time_to_first_response (bool): If true, the time to first response metric is hidden
             in the output
+        hide_time_before_label (bool): If true, the time before label metric is hidden in the output
         ignore_users (List[str]): List of usernames to ignore when calculating metrics
         labels_to_measure (List[str]): List of labels to measure how much time the label is applied
+        label_before (str): The label to measure time before
         enable_mentor_count (bool): If set to TRUE, compute number of mentors
         min_mentor_comments (str): If set, defines the minimum number of comments for mentors
         max_comments_eval (str): If set, defines the maximum number of comments to look
@@ -70,9 +72,11 @@ class EnvVars:
         hide_time_to_answer: bool,
         hide_time_to_close: bool,
         hide_time_to_first_response: bool,
+        hide_time_before_label: bool,
         hide_created_at: bool,
         ignore_user: List[str],
         labels_to_measure: List[str],
+        label_before: str,
         enable_mentor_count: bool,
         min_mentor_comments: str,
         max_comments_eval: str,
@@ -92,12 +96,14 @@ class EnvVars:
         self.ghe = ghe
         self.ignore_users = ignore_user
         self.labels_to_measure = labels_to_measure
+        self.label_before = label_before
         self.hide_author = hide_author
         self.hide_items_closed_count = hide_items_closed_count
         self.hide_label_metrics = hide_label_metrics
         self.hide_time_to_answer = hide_time_to_answer
         self.hide_time_to_close = hide_time_to_close
         self.hide_time_to_first_response = hide_time_to_first_response
+        self.hide_time_before_label = hide_time_before_label
         self.hide_created_at = hide_created_at
         self.enable_mentor_count = enable_mentor_count
         self.min_mentor_comments = min_mentor_comments
@@ -125,9 +131,11 @@ class EnvVars:
             f"{self.hide_time_to_answer},"
             f"{self.hide_time_to_close},"
             f"{self.hide_time_to_first_response},"
+            f"{self.hide_time_before_label},"
             f"{self.hide_created_at},"
             f"{self.ignore_users},"
             f"{self.labels_to_measure},"
+            f"{self.label_before},"
             f"{self.enable_mentor_count},"
             f"{self.min_mentor_comments},"
             f"{self.max_comments_eval},"
@@ -220,6 +228,8 @@ def get_env_vars(test: bool = False) -> EnvVars:
     if ignore_users:
         ignore_users_list = ignore_users.split(",")
 
+    label_before = os.getenv("LABEL_BEFORE", "")
+
     report_title = os.getenv("REPORT_TITLE", "Issue Metrics")
     output_file = os.getenv("OUTPUT_FILE", "")
     rate_limit_bypass = get_bool_env_var("RATE_LIMIT_BYPASS", False)
@@ -232,6 +242,7 @@ def get_env_vars(test: bool = False) -> EnvVars:
     hide_time_to_answer = get_bool_env_var("HIDE_TIME_TO_ANSWER", False)
     hide_time_to_close = get_bool_env_var("HIDE_TIME_TO_CLOSE", False)
     hide_time_to_first_response = get_bool_env_var("HIDE_TIME_TO_FIRST_RESPONSE", False)
+    hide_time_before_label = get_bool_env_var("HIDE_TIME_BEFORE_LABEL", False)
     hide_created_at = get_bool_env_var("HIDE_CREATED_AT", True)
     enable_mentor_count = get_bool_env_var("ENABLE_MENTOR_COUNT", False)
     min_mentor_comments = os.getenv("MIN_MENTOR_COMMENTS", "10")
@@ -252,9 +263,11 @@ def get_env_vars(test: bool = False) -> EnvVars:
         hide_time_to_answer,
         hide_time_to_close,
         hide_time_to_first_response,
+        hide_time_before_label,
         hide_created_at,
         ignore_users_list,
         labels_to_measure_list,
+        label_before,
         enable_mentor_count,
         min_mentor_comments,
         max_comments_eval,

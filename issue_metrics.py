@@ -25,7 +25,7 @@ from classes import IssueWithMetrics
 from config import EnvVars, get_env_vars
 from discussions import get_discussions
 from json_writer import write_to_json
-from labels import get_label_metrics, get_stats_time_in_labels
+from labels import get_label_metrics, get_stats_time_in_labels, get_time_before_label
 from markdown_helpers import markdown_too_large_for_issue_body, split_markdown_file
 from markdown_writer import write_to_markdown
 from most_active_mentors import count_comments_per_user, get_mentor_count
@@ -146,6 +146,10 @@ def get_per_issue_metrics(
                 )
             if labels and env_vars.hide_label_metrics is False:
                 issue_with_metrics.label_metrics = get_label_metrics(issue, labels)
+            if env_vars.label_before and env_vars.hide_time_before_label is False:
+                issue_with_metrics.time_before_label = get_time_before_label(
+                    issue, env_vars.label_before
+                )
             if issue.state == "closed":  # type: ignore
                 num_issues_closed += 1
                 if not env_vars.hide_time_to_close:
