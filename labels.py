@@ -145,3 +145,21 @@ def get_stats_time_in_labels(
         "90p": ninety_percentile_in_labels,
     }
     return stats
+
+
+def get_time_before_label(issue: github3.issues.Issue, label: str) -> timedelta:
+    """
+    Calculate the time before the specified label was added to the issue.
+
+    Args:
+        issue (github3.issues.Issue): A GitHub issue.
+        label (str): The label to measure time before.
+
+    Returns:
+        timedelta: The time before the specified label was added to the issue.
+    """
+    label_events = get_label_events(issue, [label])
+    for event in label_events:
+        if event.event == "labeled":
+            return event.created_at - datetime.fromisoformat(issue.created_at)
+    return timedelta(0)

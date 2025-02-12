@@ -79,6 +79,11 @@ def get_non_hidden_columns(labels) -> List[str]:
     if not hide_label_metrics and labels:
         for label in labels:
             columns.append(f"Time spent in {label}")
+
+    hide_time_before_label = env_vars.hide_time_before_label
+    if not hide_time_before_label and env_vars.label_before:
+        columns.append(f"Time before {env_vars.label_before}")
+
     hide_created_at = env_vars.hide_created_at
     if not hide_created_at:
         columns.append("Created At")
@@ -215,6 +220,8 @@ def write_to_markdown(
                 for label in labels:
                     if f"Time spent in {label}" in columns:
                         file.write(f" {issue.label_metrics[label]} |")
+            if f"Time before {env_vars.label_before}" in columns:
+                file.write(f" {issue.time_before_label} |")
             if "Created At" in columns:
                 file.write(f" {issue.created_at} |")
             file.write("\n")
